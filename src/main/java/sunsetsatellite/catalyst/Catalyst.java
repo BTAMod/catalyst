@@ -15,6 +15,7 @@ import net.minecraft.core.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sunsetsatellite.catalyst.core.util.*;
+import sunsetsatellite.catalyst.core.util.network.NetworkManager;
 import turniplabs.halplibe.helper.NetworkHelper;
 
 import java.util.*;
@@ -26,12 +27,16 @@ public class Catalyst implements ModInitializer {
 
 	public static final Registry<MpGuiEntry> GUIS = new Registry<>();
 
+	public static final Signal<BlockChangeInfo> TILE_ENTITY_BLOCK_CHANGED_SIGNAL = new Signal<>();
+	public static final Signal<BlockChangeInfo> ANY_BLOCK_CHANGED_SIGNAL = new Signal<>();
+
 	static {
 		NetworkHelper.register(PacketOpenGui.class,false,true);
 	}
 
     @Override
     public void onInitialize() {
+		TILE_ENTITY_BLOCK_CHANGED_SIGNAL.connect(NetworkManager.getInstance());
         LOGGER.info("Catalyst initialized.");
     }
 
@@ -116,6 +121,11 @@ public class Catalyst implements ModInitializer {
 		return new ArrayList<>(Arrays.asList(values));
 	}
 
+	@SafeVarargs
+	public static <T> Set<T> setOf(T... values){
+		return new HashSet<>(Arrays.asList(values));
+	}
+
 	public static <T,U> List<Pair<T,U>> zip(List<T> first, List<U> second){
 		List<Pair<T,U>> list = new ArrayList<>();
 		List<?> shortest = first.size() < second.size() ? first : second;
@@ -123,5 +133,19 @@ public class Catalyst implements ModInitializer {
 			list.add(Pair.of(first.get(i),second.get(i)));
 		}
 		return list;
+	}
+
+	/**
+	 * @param values The values to be checked
+	 * @return Returns the smallest of <code>values</code>
+	 */
+	public static long multiMin(long... values){
+		long min = Long.MAX_VALUE;
+		for (long value : values) {
+			if(value < min){
+				min = value;
+			}
+		}
+		return min;
 	}
 }

@@ -5,5 +5,6 @@ public enum ConduitCapability {
     SIGNALUM,
     ITEM,
     NETWORK,
-    CATALYST_ENERGY
+    CATALYST_ENERGY,
+	ELECTRIC
 }

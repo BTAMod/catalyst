@@ -3,6 +3,7 @@ package sunsetsatellite.catalyst.core.util;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.util.helper.Axis;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.world.WorldSource;
 
@@ -187,6 +188,34 @@ public class Vec3i {
 		return this;
 	}
 
+	public Vec3i set(Axis axis, int value){
+		switch (axis) {
+			case X:
+				this.x = value;
+				return this;
+			case Y:
+				this.y = value;
+				return this;
+			case Z:
+				this.z = value;
+				return this;
+			default:
+				return this;
+		}
+	}
+
+	public int get(Axis axis){
+		switch (axis) {
+			case X:
+				return x;
+			case Y:
+				return y;
+			case Z:
+				return z;
+			default:
+				return 0;
+		}
+	}
 
 	public void writeToNBT(CompoundTag tag){
         tag.putInt("x",this.x);

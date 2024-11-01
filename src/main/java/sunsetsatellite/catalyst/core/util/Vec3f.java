@@ -179,6 +179,19 @@ public class Vec3f {
 		}
 	}
 
+	public double get(Axis axis){
+		switch (axis) {
+			case X:
+				return x;
+			case Y:
+				return y;
+			case Z:
+				return z;
+			default:
+				return 0;
+		}
+	}
+
 
 	//creates a vec2f from any 2 non-null values of this vec3f
     public Vec2f toVec2f() {

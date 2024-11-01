@@ -69,6 +69,14 @@ public enum Direction {
         return vec.copy();
     }
 
+	public static Vec3i[] getVecs(){
+		Vec3i[] vecs = new Vec3i[Direction.values().length];
+		for (int i = 0; i < Direction.values().length; i++) {
+			vecs[i] = Direction.values()[i].getVec();
+		}
+		return vecs;
+	}
+
 	public Axis getAxis() {
 		return axis;
 	}
