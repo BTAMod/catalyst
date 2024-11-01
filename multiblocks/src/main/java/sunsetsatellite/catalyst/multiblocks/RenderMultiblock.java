@@ -23,7 +23,7 @@ public class RenderMultiblock extends TileEntityRenderer<TileEntity> {
         Direction dir = Direction.getDirectionFromSide(tileEntity.getMovedData());
         World world = this.renderDispatcher.renderEngine.mc.theWorld;
         if(tileEntity instanceof IMultiblock){
-            Multiblock multiblock = ((IMultiblock) tileEntity).getMultiblock();
+            Multiblock multiblock = ((IMultiblock) tileEntity).getMultiblock().data;
             ArrayList<BlockInstance> blocks = multiblock.getBlocks(new Vec3i(i, j, k),dir);
             ArrayList<BlockInstance> substitutions = multiblock.getSubstitutions(new Vec3i(i, j, k),dir);
 			blockRenderer = new RenderBlocks(new HologramWorld(blocks));
