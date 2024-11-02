@@ -4,9 +4,13 @@
   "package": "sunsetsatellite.catalyst.core.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ChunkMixin",
     "EntityPlayerMixin",
     "EntityPlayerMPMixin",
+    "LevelDataMixin",
     "SaveHandlerBaseMixin",
+    "TileEntityMixin",
+    "WorldClientMixin",
     "WorldMixin"
   ],
   "client": [

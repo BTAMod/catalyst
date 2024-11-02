@@ -2,6 +2,7 @@ package sunsetsatellite.catalyst.core.mixin;
 
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.save.LevelData;
 import net.minecraft.core.world.save.LevelStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,11 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sunsetsatellite.catalyst.Catalyst;
 import sunsetsatellite.catalyst.core.util.BlockChangeInfo;
 import sunsetsatellite.catalyst.core.util.Vec3i;
+import sunsetsatellite.catalyst.core.util.mixin.interfaces.IAbsoluteWorldTime;
 import sunsetsatellite.catalyst.core.util.mixin.interfaces.ISaveHandlerWorld;
 import sunsetsatellite.catalyst.core.util.network.NetworkManager;
 
 @Mixin(value = World.class,remap = false)
-public abstract class WorldMixin {
+public abstract class WorldMixin implements IAbsoluteWorldTime {
 
 	@Shadow
 	@Final
@@ -30,6 +32,8 @@ public abstract class WorldMixin {
 
 	@Shadow public abstract TileEntity getBlockTileEntity(int x, int y, int z);
 
+	@Shadow
+	protected LevelData levelData;
 	@Unique
 	private final World thisAs = (World)((Object)this);
 
@@ -85,5 +89,20 @@ public abstract class WorldMixin {
 		if(getBlockTileEntity(x,y,z) != null || id == 0){
 			Catalyst.TILE_ENTITY_BLOCK_CHANGED_SIGNAL.emit(new BlockChangeInfo(thisAs,new Vec3i(x,y,z),id,getBlockMetadata(x,y,z)));
 		}
+	}
+
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/debug/Debug;change(Ljava/lang/String;)V", ordinal = 5, shift = At.Shift.AFTER))
+	public void tick(CallbackInfo ci){
+		((IAbsoluteWorldTime) this.levelData).setAbsoluteWorldTime(((IAbsoluteWorldTime) this.levelData).getAbsoluteWorldTime() + 1L);
+	}
+
+	@Override
+	public long getAbsoluteWorldTime() {
+		return ((IAbsoluteWorldTime) levelData).getAbsoluteWorldTime();
+	}
+
+	@Override
+	public void setAbsoluteWorldTime(long value) {
+		((IAbsoluteWorldTime) levelData).setAbsoluteWorldTime(value);
 	}
 }
