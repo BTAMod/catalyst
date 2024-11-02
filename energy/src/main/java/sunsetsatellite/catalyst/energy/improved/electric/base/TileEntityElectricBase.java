@@ -3,14 +3,18 @@ package sunsetsatellite.catalyst.energy.improved.electric.base;
 import net.minecraft.core.block.entity.TileEntity;
 import sunsetsatellite.catalyst.core.util.Direction;
 import sunsetsatellite.catalyst.core.util.Vec3i;
+import sunsetsatellite.catalyst.core.util.mixin.interfaces.ITileEntityInit;
 import sunsetsatellite.catalyst.core.util.network.Network;
 import sunsetsatellite.catalyst.core.util.network.NetworkComponentTile;
 import sunsetsatellite.catalyst.core.util.network.NetworkType;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
+import sunsetsatellite.catalyst.energy.improved.electric.api.IVoltageTiered;
+import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
+import sunsetsatellite.catalyst.energy.improved.electric.test.block.BlockElectric;
 
 
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
-public abstract class TileEntityElectricBase extends TileEntity implements IElectric, NetworkComponentTile {
+public abstract class TileEntityElectricBase extends TileEntity implements IElectric, IVoltageTiered, ITileEntityInit, NetworkComponentTile {
 
 	protected long energy = 0;
 	protected long capacity = 0;
@@ -24,6 +28,12 @@ public abstract class TileEntityElectricBase extends TileEntity implements IElec
 	protected long ampsUsing = 0;
 
 	public TileEntityElectricBase() {}
+
+	@Override
+	public VoltageTier getTier() {
+		BlockElectric block = (BlockElectric) getBlockType();
+		return block.getTier();
+	}
 
 	//IEnergyContainer
 	@Override

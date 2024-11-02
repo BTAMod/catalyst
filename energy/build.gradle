@@ -16,6 +16,7 @@ loom {
 dependencies {
 	if(findProject(":catalyst") != null){
 		implementation project(path: ':catalyst', configuration: "namedElements")
+		implementation project(path: ":btwaila",configuration: "namedElements")
 	} else {
 		implementation project(path: ':', configuration: "namedElements")
 	}

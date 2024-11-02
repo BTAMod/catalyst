@@ -6,7 +6,6 @@ import sunsetsatellite.catalyst.core.util.Direction;
 import sunsetsatellite.catalyst.core.util.network.NetworkComponentTile;
 import sunsetsatellite.catalyst.core.util.network.NetworkPath;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
-import sunsetsatellite.catalyst.energy.improved.simple.test.tile.TileEntityWire;
 
 
 
@@ -37,8 +36,8 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 		}
 		long remainingCapacity = getCapacityRemaining();
 		TileEntity tile = dir.getTileEntity(worldObj,this);
-		if(tile instanceof TileEntityWire) {
-			TileEntityWire wire = (TileEntityWire) tile;
+		if(tile instanceof TileEntityElectricConductor) {
+			TileEntityElectricConductor wire = (TileEntityElectricConductor) tile;
 
 			for (NetworkPath path : energyNet.getPathData(wire.getPosition())) {
 				long pathLoss = 0;
@@ -50,7 +49,7 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 				if(dest.canProvide(path.targetDirection)) {
 					if (canReceive(dir)) {
 						long voltage = dest.getMaxOutputVoltage();
-						amperage = Math.min(amperage, dest.getMaxOutputAmperage());
+						amperage = Math.min(amperage, (dest.getMaxOutputAmperage() - dest.getAmpsCurrentlyUsed()));
 						for (NetworkComponentTile component : path.path) {
 							if(component instanceof TileEntityElectricConductor){
 								pathLoss += ((TileEntityElectricConductor) component).getProperties().getMaterial().getLossPerBlock();
@@ -80,13 +79,16 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 								//TODO: do something bad here later :tf:
 								return Math.max(amperage, getMaxInputAmperage() - ampsUsing); //short circuit amperage
 							}
-							if(remainingCapacity > pathVoltage){
+							if(remainingCapacity >= pathVoltage){
 								long willUseAmps = Math.min(remainingCapacity / pathVoltage, Math.min(amperage, getMaxInputAmperage() - ampsUsing));
 								if(willUseAmps > 0){
 									for (NetworkComponentTile pathTile : path.path) {
 										if (pathTile instanceof TileEntityElectricConductor) {
 											TileEntityElectricConductor pathWire = (TileEntityElectricConductor) pathTile;
-											//TODO: increment amps for wires
+											long voltageTraveled = voltage;
+											voltageTraveled -= pathWire.getProperties().getMaterial().getLossPerBlock();
+											if (voltageTraveled <= 0) break;
+											pathWire.incrementAmperage(willUseAmps);
 										}
 									}
 									long willUseEnergy = pathVoltage * willUseAmps;

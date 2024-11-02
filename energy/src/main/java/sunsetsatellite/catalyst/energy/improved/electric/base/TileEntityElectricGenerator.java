@@ -21,4 +21,9 @@ public abstract class TileEntityElectricGenerator extends TileEntityElectricBase
 		return true;
 	}
 
+	@Override
+	public long receiveEnergy(@NotNull Direction dir, long amperage) {
+		return 0;
+	}
+
 }

@@ -64,7 +64,7 @@ public interface IElectric {
 	 * @return Amount of energy actually added
 	 */
 	default long internalAddEnergy(long energy) {
-		return internalChangeEnergy(energy);
+		return internalChangeEnergy(Math.min(energy,getCapacityRemaining()));
 	}
 
 	/**
@@ -73,7 +73,7 @@ public interface IElectric {
 	 * @return Amount of energy actually removed
 	 */
 	default long internalRemoveEnergy(long energy) {
-		return internalChangeEnergy(-energy);
+		return internalChangeEnergy(-Math.min(getEnergy(),energy));
 	}
 
 	/**

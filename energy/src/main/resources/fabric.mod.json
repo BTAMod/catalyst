@@ -20,8 +20,14 @@
   "entrypoints": {
     "main": [
       "sunsetsatellite.catalyst.CatalystEnergy"
-    ]
-  },
+    ],
+		"afterGameStart": [
+			"sunsetsatellite.catalyst.CatalystEnergy"
+		],
+		"btwaila": [
+			"sunsetsatellite.catalyst.energy.improved.electric.api.impl.btwaila.BTWailaCEPlugin"
+		]
+	},
   "mixins": [
 		"catalyst-energy.mixins.json"
   ],

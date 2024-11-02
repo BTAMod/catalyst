@@ -1,0 +1,25 @@
+material.catalyst-energy.wire.test=Test
+tile.catalyst-energy.wire.test.1x.name=1x Test Wire
+tile.catalyst-energy.wire.test.1x.desc=
+tile.catalyst-energy.wire.test.2x.name=2x Test Wire
+tile.catalyst-energy.wire.test.2x.desc=
+tile.catalyst-energy.wire.test.3x.name=3x Test Wire
+tile.catalyst-energy.wire.test.3x.desc=
+tile.catalyst-energy.wire.test.4x.name=4x Test Wire
+tile.catalyst-energy.wire.test.4x.desc=
+tile.catalyst-energy.wire.test.8x.name=8x Test Wire
+tile.catalyst-energy.wire.test.8x.desc=
+tile.catalyst-energy.wire.test.12x.name=12x Test Wire
+tile.catalyst-energy.wire.test.12x.desc=
+tile.catalyst-energy.wire.test.16x.name=16x Test Wire
+tile.catalyst-energy.wire.test.16x.desc=
+
+tile.catalyst-energy.null.name=Null Item
+tile.catalyst-energy.null.desc=Something went wrong.
+
+tile.catalyst-energy.generator.name=Electric Generator
+tile.catalyst-energy.generator.desc=
+tile.catalyst-energy.machine.name=Electric Machine
+tile.catalyst-energy.machine.desc=
+tile.catalyst-energy.batteryBox.name=4x Electric Battery Box
+tile.catalyst-energy.batteryBox.desc=

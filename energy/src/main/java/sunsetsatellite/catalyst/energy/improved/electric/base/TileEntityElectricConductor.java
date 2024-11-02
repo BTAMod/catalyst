@@ -1,22 +1,20 @@
 package sunsetsatellite.catalyst.energy.improved.electric.base;
 
 import net.minecraft.core.block.entity.TileEntity;
-import sunsetsatellite.catalyst.core.util.ConduitCapability;
-import sunsetsatellite.catalyst.core.util.Direction;
-import sunsetsatellite.catalyst.core.util.IConduitTile;
-import sunsetsatellite.catalyst.core.util.Vec3i;
+import sunsetsatellite.catalyst.core.util.*;
+import sunsetsatellite.catalyst.core.util.mixin.interfaces.ITileEntityInit;
 import sunsetsatellite.catalyst.core.util.network.Network;
 import sunsetsatellite.catalyst.core.util.network.NetworkType;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireProperties;
 
-public abstract class TileEntityElectricConductor extends TileEntity implements IConduitTile {
+public abstract class TileEntityElectricConductor extends TileEntity implements IConduitTile, ITileEntityInit {
 	public Network energyNet;
 	protected WireProperties properties;
 	protected long voltageRating = 0;
 	protected long ampRating = 0;
 
-	protected long ampLoad = 0;
+	protected AveragingCounter averageAmpLoad = new AveragingCounter();
 	protected long temperature = 0;
 
 	@Override
@@ -56,6 +54,18 @@ public abstract class TileEntityElectricConductor extends TileEntity implements 
 
 	public long getTemperature() {
 		return temperature;
+	}
+
+	public void incrementAmperage(long amps){
+		averageAmpLoad.increment(worldObj,amps);
+		int dif = (int) (averageAmpLoad.getLast(worldObj) - getAmpRating());
+		if (dif > 0) {
+			//TODO: burn cable here later
+		}
+	}
+
+	public double getAverageAmpLoad(){
+		return averageAmpLoad.getAverage(worldObj);
 	}
 
 	public WireProperties getProperties() {
