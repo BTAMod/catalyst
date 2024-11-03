@@ -2,9 +2,11 @@ package sunsetsatellite.catalyst.core.util.tile;
 
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.world.World;
 import sunsetsatellite.catalyst.Catalyst;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,11 +50,14 @@ public abstract class TEFeature {
 	public static TEFeature createFeature(String id, World world, int x, int y, int z) {
 		Class<? extends TEFeature> clazz = AVAILABLE_FEATURES.get(id);
 		if (clazz == null) {
-			Catalyst.LOGGER.error("No tile entity feature with id '{}'!", id);
-			return null;
+			throw new RuntimeException("No tile entity feature with id '"+id+"'!");
 		}
 		try {
-			return clazz.getConstructor(String.class, World.class,Integer.class,Integer.class,Integer.class).newInstance(id,world,x,y,z);
+			Constructor<? extends TEFeature> c = clazz.getDeclaredConstructor(String.class, World.class, int.class, int.class, int.class);
+			c.setAccessible(true);
+			TEFeature feature = c.newInstance(id, world, x, y, z);
+			c.setAccessible(false);
+			return feature;
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException("Failed to create tile entity feature: '"+id+"'!",e);
 		}
@@ -66,8 +71,11 @@ public abstract class TEFeature {
 			return null;
 		}
 		try {
-			TEFeature feature = clazz.getConstructor(String.class,World.class).newInstance(id,world);
+			Constructor<? extends TEFeature> c = clazz.getDeclaredConstructor(String.class, World.class);
+			c.setAccessible(true);
+			TEFeature feature = c.newInstance(id,world);
 			feature.readFromNBT(nbt);
+			c.setAccessible(false);
 			return feature;
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException("Failed to create tile entity feature: '"+id+"'!",e);
@@ -80,6 +88,10 @@ public abstract class TEFeature {
 
 	public int getBlockMetadata(){
 		return world.getBlockMetadata(x,y,z);
+	}
+
+	public TileEntity getTile(){
+		return world.getBlockTileEntity(x,y,z);
 	}
 
 	public void readFromNBT(CompoundTag nbttagcompound)
@@ -98,5 +110,7 @@ public abstract class TEFeature {
 	}
 
 	public abstract void tick();
+
+	public abstract void init(Block block);
 
 }
