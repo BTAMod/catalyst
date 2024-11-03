@@ -23,7 +23,7 @@ public class BlockElectricMachine extends BlockElectric{
 
 	@Override
 	public String getPersistentDescription(ItemStack stack) {
-		return String.format("%sMax Voltage %sIN%s: %s%dV %s(%s%s%s)\n%sMax Current Draw: %s%dA\n%sEnergy Capacity: %s%dEU",
+		return String.format("%sMax Voltage %sIN%s: %s%dV %s(%s%s%s)\n%sMax Current Draw: %s%dA\n%sEnergy Capacity: %s%dJ",
 			TextFormatting.LIGHT_GRAY, TextFormatting.LIME, TextFormatting.LIGHT_GRAY,
 			TextFormatting.LIME, tier.maxVoltage, TextFormatting.LIGHT_GRAY, tier.textColor, tier.name(), TextFormatting.LIGHT_GRAY,
 			TextFormatting.LIGHT_GRAY, TextFormatting.ORANGE, 1,

@@ -19,7 +19,11 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 	@Override
 	public void tick() {
 		super.tick();
+		//reset counters
 		ampsUsing = 0;
+		averageAmpLoad.increment(worldObj,0);
+		averageEnergyTransfer.increment(worldObj,0);
+		//try to pull max allowed current from any connected side
 		for (Direction dir : Direction.values()) {
 			TileEntity tile = dir.getTileEntity(worldObj,this);
 			if(tile instanceof TileEntityElectricConductor) {
@@ -35,21 +39,28 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 			return 0;
 		}
 		long remainingCapacity = getCapacityRemaining();
+		long willUseAmps = 0;
 		TileEntity tile = dir.getTileEntity(worldObj,this);
 		if(tile instanceof TileEntityElectricConductor) {
 			TileEntityElectricConductor wire = (TileEntityElectricConductor) tile;
 
+			//for every known path
 			for (NetworkPath path : energyNet.getPathData(wire.getPosition())) {
 				long pathLoss = 0;
+				//ignore itself or non-electric components in the path
 				if(path.target == this || !(path.target instanceof IElectric)){
 					continue;
 				}
 				IElectric dest = (IElectric) path.target;
 
-				if(dest.canProvide(path.targetDirection)) {
+				//receive/provide check
+				if(dest.canProvide(path.targetDirection.getOpposite())) {
 					if (canReceive(dir)) {
+						//get max voltage from destination
+						//limit amps to maximum available from dest
 						long voltage = dest.getMaxOutputVoltage();
 						amperage = Math.min(amperage, (dest.getMaxOutputAmperage() - dest.getAmpsCurrentlyUsed()));
+						//calculate path loss
 						for (NetworkComponentTile component : path.path) {
 							if(component instanceof TileEntityElectricConductor){
 								pathLoss += ((TileEntityElectricConductor) component).getProperties().getMaterial().getLossPerBlock();
@@ -59,8 +70,10 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 							//avoid paths where all energy is lost
 							continue;
 						}
+						//voltage drop
 						long pathVoltage = voltage - pathLoss;
 						boolean pathBroken = false;
+						//handle wires with insufficient voltage rating
 						for (NetworkComponentTile pathTile : path.path) {
 							if(pathTile instanceof TileEntityElectricConductor){
 								TileEntityElectricConductor pathWire = (TileEntityElectricConductor) pathTile;
@@ -75,29 +88,34 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 						if(pathBroken) continue;
 
 						if(pathVoltage > 0){
+							//handle device over-voltage
 							if(pathVoltage > getMaxInputVoltage()){
 								//TODO: do something bad here later :tf:
 								return Math.max(amperage, getMaxInputAmperage() - ampsUsing); //short circuit amperage
 							}
 							if(remainingCapacity >= pathVoltage){
-								long willUseAmps = Math.min(remainingCapacity / pathVoltage, Math.min(amperage, getMaxInputAmperage() - ampsUsing));
+								//calculate real current draw
+								willUseAmps = Math.min(remainingCapacity / pathVoltage, Math.min(amperage, getMaxInputAmperage() - ampsUsing));
 								if(willUseAmps > 0){
-									for (NetworkComponentTile pathTile : path.path) {
-										if (pathTile instanceof TileEntityElectricConductor) {
-											TileEntityElectricConductor pathWire = (TileEntityElectricConductor) pathTile;
-											long voltageTraveled = voltage;
-											voltageTraveled -= pathWire.getProperties().getMaterial().getLossPerBlock();
-											if (voltageTraveled <= 0) break;
-											pathWire.incrementAmperage(willUseAmps);
-										}
-									}
 									long willUseEnergy = pathVoltage * willUseAmps;
 									if(dest.getEnergy() >= willUseEnergy){
-										addAmpUsage(willUseAmps);
-										dest.addAmpUsage(willUseAmps);
+
+										//set current in wires
+										for (NetworkComponentTile pathTile : path.path) {
+											if (pathTile instanceof TileEntityElectricConductor) {
+												TileEntityElectricConductor pathWire = (TileEntityElectricConductor) pathTile;
+												long voltageTraveled = voltage;
+												voltageTraveled -= pathWire.getProperties().getMaterial().getLossPerBlock();
+												if (voltageTraveled <= 0) break;
+												pathWire.incrementAmperage(willUseAmps);
+											}
+										}
+
+										//finish energy transfer
+										addAmpsToUse(willUseAmps);
+										//dest.addAmpsToUse(willUseAmps);
 										internalAddEnergy(willUseEnergy);
 										dest.internalRemoveEnergy(willUseEnergy);
-										return willUseAmps;
 									}
 								}
 							}
@@ -106,6 +124,6 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 				}
 			}
 		}
-		return 0;
+		return willUseAmps; //return amps used
 	}
 }

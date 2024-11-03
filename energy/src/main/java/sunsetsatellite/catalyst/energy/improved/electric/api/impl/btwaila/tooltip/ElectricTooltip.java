@@ -1,8 +1,10 @@
 package sunsetsatellite.catalyst.energy.improved.electric.api.impl.btwaila.tooltip;
 
 import net.minecraft.client.render.stitcher.TextureRegistry;
+import net.minecraft.core.net.command.TextFormatting;
 import sunsetsatellite.catalyst.energy.improved.electric.base.TileEntityElectricBase;
 import sunsetsatellite.catalyst.energy.improved.electric.base.TileEntityElectricGenerator;
+import sunsetsatellite.catalyst.energy.improved.electric.base.TileEntityElectricStorage;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntitySimpleElectricBatteryBox;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntitySimpleElectricGenerator;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntitySimpleElectricMachine;
@@ -20,20 +22,33 @@ public class ElectricTooltip extends TileTooltip<TileEntityElectricBase> {
 
 	@Override
 	public void drawAdvancedTooltip(TileEntityElectricBase tile, AdvancedInfoComponent c) {
-		ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Amps: ", true, false);
-		progressBarOptions.fgOptions.setColor(0xFFAA00);
-		progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
-		progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));
+		//Amps
 		if(tile instanceof TileEntityElectricGenerator){
-			c.drawProgressBarTextureWithText((int) tile.getAmpsCurrentlyUsed(),(int) tile.getMaxOutputAmperage(),progressBarOptions,0);
-
+			/*ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Amps OUT: ", true, false);
+			progressBarOptions.fgOptions.setColor(0xFFAA00);
+			progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
+			progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));
+			c.drawProgressBarTextureWithText((int) tile.getAmpsCurrentlyUsed(),(int) tile.getMaxOutputAmperage(),progressBarOptions,0);*/
+		} else if(tile instanceof TileEntityElectricStorage) {
+			ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Current Draw (mA): ", true, false);
+			progressBarOptions.fgOptions.setColor(0xFFAA00);
+			progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
+			progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));
+			c.drawProgressBarTextureWithText((int) (tile.getAverageAmpLoad()*1000), (int) (tile.getMaxInputAmperage()*1000), progressBarOptions,0);
 		} else {
-			c.drawProgressBarTextureWithText((int) tile.getAmpsCurrentlyUsed(),(int) tile.getMaxInputAmperage(), progressBarOptions,0);
+			ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Current Draw (mA): ", true, false);
+			progressBarOptions.fgOptions.setColor(0xFFAA00);
+			progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
+			progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));
+			c.drawProgressBarTextureWithText((int) (tile.getAverageAmpLoad()*1000), (int) (tile.getMaxInputAmperage()*1000), progressBarOptions,0);
 		}
-		progressBarOptions = new ProgressBarOptions(160, "Energy: ", true, true);
+		//Energy
+		ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Energy: ", true, true);
 		progressBarOptions.fgOptions.setColor(0xFF2020);
 		progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
 		progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));
 		c.drawProgressBarTextureWithText((int) tile.getEnergy(),(int) tile.getCapacity(),progressBarOptions,0);
+
+		c.drawStringJustified("Energy Net Change: "+ TextFormatting.YELLOW+tile.getAverageEnergyTransfer()+TextFormatting.RESET,0,160,0xFFFFFFFF);
 	}
 }

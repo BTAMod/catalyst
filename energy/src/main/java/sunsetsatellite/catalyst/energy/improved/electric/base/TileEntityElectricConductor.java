@@ -71,4 +71,9 @@ public abstract class TileEntityElectricConductor extends TileEntity implements 
 	public WireProperties getProperties() {
 		return properties;
 	}
+
+	@Override
+	public void tick() {
+		super.tick();
+	}
 }

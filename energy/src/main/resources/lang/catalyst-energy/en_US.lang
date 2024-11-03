@@ -23,3 +23,6 @@ tile.catalyst-energy.machine.name=Electric Machine
 tile.catalyst-energy.machine.desc=
 tile.catalyst-energy.batteryBox.name=4x Electric Battery Box
 tile.catalyst-energy.batteryBox.desc=
+
+item.catalyst-energy.battery.name=Electric Battery
+item.catalyst-energy.battery.desc=

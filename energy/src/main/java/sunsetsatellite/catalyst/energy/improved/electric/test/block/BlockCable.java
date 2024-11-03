@@ -8,8 +8,12 @@ import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
+import sunsetsatellite.catalyst.core.util.ConduitCapability;
+import sunsetsatellite.catalyst.core.util.IConduitBlock;
 import sunsetsatellite.catalyst.core.util.ICustomDescription;
 import sunsetsatellite.catalyst.core.util.ISideInteractable;
+import sunsetsatellite.catalyst.core.util.network.NetworkComponent;
+import sunsetsatellite.catalyst.core.util.network.NetworkType;
 import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireMaterial;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireProperties;
@@ -17,7 +21,7 @@ import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntityCab
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectricWire;
 
 
-public class BlockCable extends BlockTileEntity implements IElectricWire, ICustomDescription, ISideInteractable {
+public class BlockCable extends BlockTileEntity implements IElectricWire, ICustomDescription, NetworkComponent, IConduitBlock, ISideInteractable {
 
 	public final WireProperties properties;
 
@@ -80,8 +84,19 @@ public class BlockCable extends BlockTileEntity implements IElectricWire, ICusto
 			TileEntityCable cable = (TileEntityCable) tile;
 			entityplayer.sendMessage("---------------");
 			entityplayer.sendMessage(String.format("A: %f",cable.getAverageAmpLoad()));
+			entityplayer.sendMessage(String.format("N: %s",cable.energyNet));
 			entityplayer.sendMessage("---------------");
 		}
 		return super.onBlockRightClicked(world, i, j, k, entityplayer, side, xHit, yHit);
+	}
+
+	@Override
+	public NetworkType getType() {
+		return NetworkType.ELECTRIC;
+	}
+
+	@Override
+	public ConduitCapability getConduitCapability() {
+		return ConduitCapability.ELECTRIC;
 	}
 }

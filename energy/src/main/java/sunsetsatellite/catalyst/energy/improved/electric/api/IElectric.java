@@ -76,12 +76,16 @@ public interface IElectric {
 		return internalChangeEnergy(-Math.min(getEnergy(),energy));
 	}
 
+	double getAverageEnergyTransfer();
+
 	/**
 	 * @return Amperage currently being used
 	 */
 	long getAmpsCurrentlyUsed();
 
-	void addAmpUsage(long amperage);
+	double getAverageAmpLoad();
+
+	void addAmpsToUse(long amperage);
 
 	/**
 	 * Only this method should be to pass energy in blocks, handles both voltage and amperage.

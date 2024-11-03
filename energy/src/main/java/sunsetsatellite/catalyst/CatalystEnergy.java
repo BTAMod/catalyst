@@ -6,10 +6,16 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.data.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sunsetsatellite.catalyst.core.util.MpGuiEntry;
+import sunsetsatellite.catalyst.core.util.tile.TEFeature;
+import sunsetsatellite.catalyst.core.util.tile.feature.ItemContainerFeature;
 import sunsetsatellite.catalyst.energy.improved.electric.test.block.color.BlockColorWire;
+import sunsetsatellite.catalyst.energy.improved.electric.test.container.ContainerSimpleElectricBatteryBox;
 import sunsetsatellite.catalyst.energy.improved.electric.test.data.ElectricBlocks;
 import sunsetsatellite.catalyst.energy.improved.electric.test.data.ElectricConfig;
+import sunsetsatellite.catalyst.energy.improved.electric.test.data.ElectricItems;
 import sunsetsatellite.catalyst.energy.improved.electric.test.data.WireMaterials;
+import sunsetsatellite.catalyst.energy.improved.electric.test.gui.GuiSimpleElectricBatteryBox;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntityCable;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntitySimpleElectricBatteryBox;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntitySimpleElectricGenerator;
@@ -33,6 +39,8 @@ public class CatalystEnergy implements ModInitializer, GameStartEntrypoint {
 
 	public static final Tag<Block> ENERGY_CONDUITS_CONNECT = Tag.of("energy_conduits_connect");
 	public static final Tag<Block> WIRES_CONNECT = Tag.of("wires_connect");
+
+	public static final String ITEM_CONTAINER_FEATURE = "catalyst-energy:feature/item_container";
 
 	/*public static final BlockWire wire = new BlockBuilder(MOD_ID)
 		.setTextures("catalyst-energy:block/wire")
@@ -80,11 +88,16 @@ public class CatalystEnergy implements ModInitializer, GameStartEntrypoint {
 		ElectricConfig.class.getClass();
 		new WireMaterials().init();
 		new ElectricBlocks().init();
+		new ElectricItems().init();
+
+		TEFeature.registerFeature(ITEM_CONTAINER_FEATURE, ItemContainerFeature.class);
 
 		EntityHelper.createTileEntity(TileEntitySimpleElectricBatteryBox.class,"ElBatteryBox");
 		EntityHelper.createTileEntity(TileEntitySimpleElectricGenerator.class,"ElSimpleGenerator");
 		EntityHelper.createTileEntity(TileEntitySimpleElectricMachine.class,"ElSimpleMachine");
 		EntityHelper.createTileEntity(TileEntityCable.class,"ElCable");
+
+		Catalyst.GUIS.register("ElBatteryBox",new MpGuiEntry(TileEntitySimpleElectricBatteryBox.class, GuiSimpleElectricBatteryBox.class, ContainerSimpleElectricBatteryBox.class));
 
         LOGGER.info("Catalyst: Energy initialized.");
     }

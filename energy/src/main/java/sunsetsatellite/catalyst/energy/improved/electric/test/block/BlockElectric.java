@@ -44,6 +44,7 @@ public abstract class BlockElectric extends BlockTileEntityRotatable implements 
 			player.sendMessage(String.format("A IN/OUT: %d/%d",elTile.getMaxInputAmperage(),elTile.getMaxOutputAmperage()));
 			player.sendMessage(String.format("A: %d",elTile.getAmpsCurrentlyUsed()));
 			player.sendMessage(String.format("E: %d/%d",elTile.getEnergy(),elTile.getCapacity()));
+			player.sendMessage(String.format("N: %s",elTile.energyNet));
 					player.sendMessage("---------------");
 		}
 		return super.onBlockRightClicked(world, x, y, z, player, side, xHit, yHit);

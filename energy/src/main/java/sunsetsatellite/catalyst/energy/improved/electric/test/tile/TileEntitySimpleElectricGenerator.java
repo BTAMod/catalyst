@@ -1,19 +1,18 @@
 package sunsetsatellite.catalyst.energy.improved.electric.test.tile;
 
 import net.minecraft.core.block.Block;
-import sunsetsatellite.catalyst.energy.improved.electric.api.IVoltageTiered;
-import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
 import sunsetsatellite.catalyst.energy.improved.electric.base.TileEntityElectricGenerator;
+import sunsetsatellite.catalyst.energy.improved.electric.test.block.BlockElectric;
 
 public class TileEntitySimpleElectricGenerator extends TileEntityElectricGenerator {
 	@Override
 	public void init(Block block) {
-		VoltageTier tier = ((IVoltageTiered) block).getTier();
+		super.init(block);
 		maxAmpsOut = 1;
 		maxAmpsIn = 0;
 		maxVoltageIn = 0;
-		maxVoltageOut =  tier.maxVoltage;
-		capacity = tier.maxVoltage * 64L;
+		maxVoltageOut = getTier((BlockElectric) block).maxVoltage;
+		capacity = getTier((BlockElectric) block).maxVoltage * 64L;
 	}
 
 	@Override

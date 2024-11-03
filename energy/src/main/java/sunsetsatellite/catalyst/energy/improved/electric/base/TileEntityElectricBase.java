@@ -1,12 +1,14 @@
 package sunsetsatellite.catalyst.energy.improved.electric.base;
 
-import net.minecraft.core.block.entity.TileEntity;
+import com.mojang.nbt.CompoundTag;
+import sunsetsatellite.catalyst.core.util.AveragingCounter;
 import sunsetsatellite.catalyst.core.util.Direction;
 import sunsetsatellite.catalyst.core.util.Vec3i;
 import sunsetsatellite.catalyst.core.util.mixin.interfaces.ITileEntityInit;
 import sunsetsatellite.catalyst.core.util.network.Network;
 import sunsetsatellite.catalyst.core.util.network.NetworkComponentTile;
 import sunsetsatellite.catalyst.core.util.network.NetworkType;
+import sunsetsatellite.catalyst.core.util.tile.ExtendableTileEntity;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IVoltageTiered;
 import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
@@ -14,7 +16,7 @@ import sunsetsatellite.catalyst.energy.improved.electric.test.block.BlockElectri
 
 
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
-public abstract class TileEntityElectricBase extends TileEntity implements IElectric, IVoltageTiered, ITileEntityInit, NetworkComponentTile {
+public abstract class TileEntityElectricBase extends ExtendableTileEntity implements IElectric, IVoltageTiered, ITileEntityInit, NetworkComponentTile {
 
 	protected long energy = 0;
 	protected long capacity = 0;
@@ -25,6 +27,8 @@ public abstract class TileEntityElectricBase extends TileEntity implements IElec
 	protected long maxVoltageOut = 0;
 	protected long maxAmpsOut = 0;
 
+	protected AveragingCounter averageAmpLoad = new AveragingCounter();
+	protected AveragingCounter averageEnergyTransfer = new AveragingCounter();
 	protected long ampsUsing = 0;
 
 	public TileEntityElectricBase() {}
@@ -68,8 +72,14 @@ public abstract class TileEntityElectricBase extends TileEntity implements IElec
 
 	@Override
 	public long internalChangeEnergy(long difference) {
+		averageEnergyTransfer.increment(worldObj,difference);
 		energy += difference;
 		return difference;
+	}
+
+	@Override
+	public double getAverageEnergyTransfer() {
+		return averageEnergyTransfer.getAverage(worldObj);
 	}
 
 	@Override
@@ -78,8 +88,14 @@ public abstract class TileEntityElectricBase extends TileEntity implements IElec
 	}
 
 	@Override
-	public void addAmpUsage(long amperage) {
+	public void addAmpsToUse(long amperage) {
+		averageAmpLoad.increment(worldObj,amperage);
 		ampsUsing += amperage;
+	}
+
+	@Override
+	public double getAverageAmpLoad() {
+		return averageAmpLoad.getAverage(worldObj);
 	}
 
 	//NetworkComponent
@@ -108,5 +124,17 @@ public abstract class TileEntityElectricBase extends TileEntity implements IElec
 	@Override
 	public void removedFromNetwork(Network network) {
 		this.energyNet = null;
+	}
+
+	@Override
+	public void readFromNBT(CompoundTag tag) {
+		energy = tag.getLong("Energy");
+		super.readFromNBT(tag);
+	}
+
+	@Override
+	public void writeToNBT(CompoundTag tag) {
+		tag.putLong("Energy",energy);
+		super.writeToNBT(tag);
 	}
 }

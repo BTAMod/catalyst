@@ -7,9 +7,10 @@ public enum VoltageTier {
 	LV("Low Voltage",9,32, TextFormatting.RED,0xFF5555),
 	MV("Medium Voltage",33,128, TextFormatting.ORANGE,0xFFAA00),
 	HV("High Voltage",129,512, TextFormatting.YELLOW,0xFFFF55),
-	EV("Extreme Voltage",513,1024, TextFormatting.GREEN,0x55FF55),
-	UV("Ultra Voltage",1025,2048, TextFormatting.LIGHT_BLUE,0x5555FF),
-	OV("Over Voltage",2049,Integer.MAX_VALUE, TextFormatting.MAGENTA,0xFF55FF);
+	EV("Extreme Voltage",513,2048, TextFormatting.GREEN,0x55FF55),
+	UV("Ultimate Voltage",2048,8192, TextFormatting.LIGHT_BLUE,0x8C0000),
+	OV("Over Voltage",8193,32767, TextFormatting.PURPLE,0x8C0000),
+	MAX("Maximum Voltage",32768,65535, TextFormatting.MAGENTA,0xFF55FF);
 
 	VoltageTier(String voltageName, int minVoltage, int maxVoltage, TextFormatting textColor, int color){
 		this.voltageName = voltageName;
