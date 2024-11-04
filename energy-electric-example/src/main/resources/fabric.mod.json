@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "catalyst-energy",
+  "id": "catalyst-energy-electric-example",
   "version": "${version}",
 
-  "name": "Catalyst: Energy",
-  "description": "Energy module of Catalyst: Implements a simple energy API.",
+  "name": "Catalyst: Energy (Electric System Example)",
+  "description": "Example mod for the electric system provided by the Energy module of Catalyst.",
 	"icon": "icon.png",
   "authors": [
     "sunsetsatellite"
@@ -19,14 +19,17 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "sunsetsatellite.catalyst.CatalystEnergy"
+      "sunsetsatellite.catalyst.CatalystEnergyExample"
     ],
 		"afterGameStart": [
-			"sunsetsatellite.catalyst.CatalystEnergy"
+			"sunsetsatellite.catalyst.CatalystEnergyExample"
+		],
+		"btwaila": [
+			"sunsetsatellite.catalyst.energy.electric.example.api.impl.btwaila.BTWailaCEPlugin"
 		]
 	},
   "mixins": [
-		"catalyst-energy.mixins.json"
+		"catalyst-energy-electric-example.mixins.json"
   ],
 
   "depends": {

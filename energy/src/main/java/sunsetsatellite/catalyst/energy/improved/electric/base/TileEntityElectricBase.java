@@ -12,7 +12,6 @@ import sunsetsatellite.catalyst.core.util.tile.ExtendableTileEntity;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IVoltageTiered;
 import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
-import sunsetsatellite.catalyst.energy.improved.electric.test.block.BlockElectric;
 
 
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
@@ -35,7 +34,7 @@ public abstract class TileEntityElectricBase extends ExtendableTileEntity implem
 
 	@Override
 	public VoltageTier getTier() {
-		BlockElectric block = (BlockElectric) getBlockType();
+		IVoltageTiered block = (IVoltageTiered) getBlockType();
 		return block.getTier();
 	}
 
