@@ -17,7 +17,13 @@ import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public abstract class TileEntityElectricBase extends ExtendableTileEntity implements IElectric, IVoltageTiered, ITileEntityInit, NetworkComponentTile {
 
+	/**
+	 * Prefer using getEnergy() instead, this field might not always represent the real energy level!
+	 */
 	protected long energy = 0;
+	/**
+	 * Prefer using getCapacity() instead, this field might not always represent the real capacity!
+	 */
 	protected long capacity = 0;
 
 	protected long maxVoltageIn = 0;

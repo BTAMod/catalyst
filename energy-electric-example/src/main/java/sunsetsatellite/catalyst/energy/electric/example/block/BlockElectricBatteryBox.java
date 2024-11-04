@@ -39,8 +39,19 @@ public class BlockElectricBatteryBox extends BlockElectric {
 	}
 
 	@Override
+	public void onBlockRemoved(World world, int x, int y, int z, int data) {
+		TileEntity tile = world.getBlockTileEntity(x,y,z);
+		if(tile instanceof TileEntitySimpleElectricBatteryBox){
+			dropContents(world,x,y,z);
+		}
+		super.onBlockRemoved(world, x, y, z, data);
+	}
+
+	@Override
 	public boolean onBlockRightClicked(World world, int x, int y, int z, EntityPlayer player, Side side, double xHit, double yHit) {
-		super.onBlockRightClicked(world, x, y, z, player, side, xHit, yHit);
+		if(player.isSneaking()){
+			return super.onBlockRightClicked(world, x, y, z, player, side, xHit, yHit);
+		}
 		TileEntity tile = world.getBlockTileEntity(x,y,z);
 		if(tile instanceof TileEntitySimpleElectricBatteryBox){
 			Catalyst.displayGui(player,tile,"ElBatteryBox");

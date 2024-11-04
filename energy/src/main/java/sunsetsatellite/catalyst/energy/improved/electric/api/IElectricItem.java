@@ -11,29 +11,44 @@ public interface IElectricItem {
 	/**
 	 * @return Maximum energy capacity of the item
 	 */
-	long getCapacity();
+	long getCapacity(ItemStack stack);
 
 	/**
 	 * @return Amount of unused capacity left
 	 */
 	default long getCapacityRemaining(ItemStack stack) {
-		return getCapacity() - getEnergy(stack);
+		return getCapacity(stack) - getEnergy(stack);
 	}
 
 	/**
 	 * @return Maximum voltage this item can handle
 	 */
-	long getMaxVoltage();
+	long getMaxVoltage(ItemStack stack);
 
 	/**
 	 * @return Maximum amount of amps this item can use
 	 */
-	long getMaxInputAmperage();
+	long getMaxInputAmperage(ItemStack stack);
 
 
 	/**
 	 * @return Maximum amperage this item can deliver
 	 */
-	long getMaxOutputAmperage();
+	long getMaxOutputAmperage(ItemStack stack);
+
+
+	/**
+	 * Charges the item.
+	 * @param energy The amount of energy to charge the item by
+	 * @return Amount of energy actually charged
+	 */
+	long charge(ItemStack stack, long energy);
+
+	/**
+	 * Discharges the item.
+	 * @param energy The amount of energy to discharge
+	 * @return Amount of energy actually discharged
+	 */
+	long discharge(ItemStack stack, long energy);
 
 }

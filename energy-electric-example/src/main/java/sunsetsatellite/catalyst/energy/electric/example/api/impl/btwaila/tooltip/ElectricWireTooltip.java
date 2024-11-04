@@ -15,7 +15,7 @@ public class ElectricWireTooltip extends TileTooltip<TileEntityElectricConductor
 
 	@Override
 	public void drawAdvancedTooltip(TileEntityElectricConductor tile, AdvancedInfoComponent c) {
-		ProgressBarOptions progressBarOptions = new ProgressBarOptions(160, "Avg. Current (mA): ", true, false);
+		ProgressBarOptions progressBarOptions = new ProgressBarOptions(170, "     Avg. Current (mA): ", true, false);
 		progressBarOptions.fgOptions.setColor(0xFFAA00);
 		progressBarOptions.fgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/sand"));
 		progressBarOptions.bgOptions.setCoordinate(TextureRegistry.getTexture("minecraft:block/obsidian"));

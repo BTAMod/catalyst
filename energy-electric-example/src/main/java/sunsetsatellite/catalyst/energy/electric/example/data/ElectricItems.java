@@ -2,6 +2,7 @@ package sunsetsatellite.catalyst.energy.electric.example.data;
 
 import sunsetsatellite.catalyst.core.util.DataInitializer;
 import sunsetsatellite.catalyst.energy.electric.example.item.ItemBattery;
+import sunsetsatellite.catalyst.energy.electric.example.item.model.ItemModelBattery;
 import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
 import turniplabs.halplibe.helper.ItemBuilder;
 
@@ -17,7 +18,8 @@ public class ElectricItems extends DataInitializer {
 		LOGGER.info("Initializing items...");
 
 		battery = new ItemBuilder(MOD_ID)
-			.setIcon("catalyst-energy-electric-example:item/battery0")
+			.setIcon("catalyst-energy-electric-example:item/battery_0")
+			.setItemModel((item)-> new ItemModelBattery(item,MOD_ID))
 			.build(new ItemBattery("battery",ElectricConfig.getItemId("battery"), VoltageTier.LV));
 
 		setInitialized(true);
