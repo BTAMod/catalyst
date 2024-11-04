@@ -13,5 +13,14 @@ public class TileEntityCable extends TileEntityElectricConductor {
 		ampRating = (long) properties.getSize() * properties.getMaterial().getDefaultAmps();
 	}
 
+	@Override
+	public void onOvercurrent() {
+
+	}
+
+	@Override
+	public void onOvervoltage(long voltage) {
+
+	}
 }
 

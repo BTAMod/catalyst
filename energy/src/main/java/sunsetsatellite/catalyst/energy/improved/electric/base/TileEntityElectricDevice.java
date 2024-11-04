@@ -78,7 +78,7 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 							if(pathTile instanceof TileEntityElectricConductor){
 								TileEntityElectricConductor pathWire = (TileEntityElectricConductor) pathTile;
 								if(pathWire.getVoltageRating() < voltage){
-									//TODO: brew something malicious here later :tf:
+									pathWire.onOvervoltage(voltage);
 									pathBroken = true;
 									pathVoltage = Math.min(pathWire.getVoltageRating(), pathVoltage);
 									break;
@@ -90,7 +90,7 @@ public abstract class TileEntityElectricDevice extends TileEntityElectricBase im
 						if(pathVoltage > 0){
 							//handle device over-voltage
 							if(pathVoltage > getMaxInputVoltage()){
-								//TODO: do something bad here later :tf:
+								onOvervoltage(pathVoltage);
 								return Math.max(amperage, getMaxInputAmperage() - ampsUsing); //short circuit amperage
 							}
 							if(remainingCapacity >= pathVoltage){

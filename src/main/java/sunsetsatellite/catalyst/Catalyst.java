@@ -1,6 +1,8 @@
 package sunsetsatellite.catalyst;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.fx.EntityFX;
 import net.minecraft.core.Global;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.block.entity.TileEntity;
@@ -148,4 +150,17 @@ public class Catalyst implements ModInitializer {
 		}
 		return min;
 	}
+
+	public static void spawnParticle(EntityFX particle){
+		if (Minecraft.getMinecraft(Minecraft.class) == null || Minecraft.getMinecraft(Minecraft.class).thePlayer == null || Minecraft.getMinecraft(Minecraft.class).effectRenderer == null)
+			return;
+		double d6 = Minecraft.getMinecraft(Minecraft.class).thePlayer.x - particle.x;
+		double d7 = Minecraft.getMinecraft(Minecraft.class).thePlayer.y - particle.y;
+		double d8 = Minecraft.getMinecraft(Minecraft.class).thePlayer.z - particle.z;
+		double d9 = 16.0D;
+		if (d6 * d6 + d7 * d7 + d8 * d8 > d9 * d9)
+			return;
+		Minecraft.getMinecraft(Minecraft.class).effectRenderer.addEffect(particle);
+	}
+
 }

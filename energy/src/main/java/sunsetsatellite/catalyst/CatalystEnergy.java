@@ -78,6 +78,7 @@ public class CatalystEnergy implements ModInitializer, GameStartEntrypoint {
 		double ratio = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
 		return ratio * (valueCoord1 - startCoord1) + startCoord2;
 	}
+
     @Override
     public void onInitialize() {
 		EntityHelper.createTileEntity(TileEntityBatteryBox.class,"BatteryBox");

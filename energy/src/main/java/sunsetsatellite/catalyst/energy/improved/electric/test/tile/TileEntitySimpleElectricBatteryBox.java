@@ -17,10 +17,10 @@ public class TileEntitySimpleElectricBatteryBox extends TileEntityElectricStorag
 
 	@Override
 	public void init(Block block) {
-		ItemContainerFeature feature = ((ItemContainerFeature) createAndAddFeature(CatalystEnergy.ITEM_CONTAINER_FEATURE)).setSize(4);
+		((ItemContainerFeature) createAndAddFeature(CatalystEnergy.ITEM_CONTAINER_FEATURE)).setSize(4);
 		super.init(block);
 		itemContainer = (ItemContainerFeature) getFeature(CatalystEnergy.ITEM_CONTAINER_FEATURE);
-		maxAmpsIn = 1;
+		maxAmpsIn = 8;
 		maxAmpsOut = 4;
 		maxVoltageIn = getTier((BlockElectric) block).maxVoltage;
 		maxVoltageOut = getTier((BlockElectric) block).maxVoltage;
@@ -32,6 +32,11 @@ public class TileEntitySimpleElectricBatteryBox extends TileEntityElectricStorag
 		int meta = getMovedData();
 		Direction outputDir = Direction.getDirectionFromSide(meta);
 		return outputDir == dir;
+	}
+
+	@Override
+	public void onOvervoltage(long voltage) {
+
 	}
 
 	@Override

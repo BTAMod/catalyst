@@ -20,4 +20,9 @@ public class TileEntitySimpleElectricMachine extends TileEntityElectricDevice{
 		super.tick();
 		internalRemoveEnergy(16);
 	}
+
+	@Override
+	public void onOvervoltage(long voltage) {
+
+	}
 }

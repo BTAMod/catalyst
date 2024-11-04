@@ -6,9 +6,10 @@ import sunsetsatellite.catalyst.core.util.mixin.interfaces.ITileEntityInit;
 import sunsetsatellite.catalyst.core.util.network.Network;
 import sunsetsatellite.catalyst.core.util.network.NetworkType;
 import sunsetsatellite.catalyst.energy.improved.electric.api.IElectric;
+import sunsetsatellite.catalyst.energy.improved.electric.api.IElectricWire;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireProperties;
 
-public abstract class TileEntityElectricConductor extends TileEntity implements IConduitTile, ITileEntityInit {
+public abstract class TileEntityElectricConductor extends TileEntity implements IConduitTile, IElectricWire, ITileEntityInit {
 	public Network energyNet;
 	protected WireProperties properties;
 	protected long voltageRating = 0;
@@ -47,9 +48,11 @@ public abstract class TileEntityElectricConductor extends TileEntity implements 
 		this.energyNet = null;
 	}
 
+	@Override
 	public long getVoltageRating() {
 		return voltageRating;
 	}
+	@Override
 	public long getAmpRating() {return ampRating;}
 
 	public long getTemperature() {
@@ -60,7 +63,7 @@ public abstract class TileEntityElectricConductor extends TileEntity implements 
 		averageAmpLoad.increment(worldObj,amps);
 		int dif = (int) (averageAmpLoad.getLast(worldObj) - getAmpRating());
 		if (dif > 0) {
-			//TODO: burn cable here later
+			onOvercurrent();
 		}
 	}
 

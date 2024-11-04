@@ -23,26 +23,12 @@ public class GuiSimpleElectricBatteryBox extends PageGui {
 			SlotGridElement grid = (SlotGridElement) new SlotGridElement(2,2)
 				.setPosition(Placement.CENTER);
 
-			/*IElement background = new FreeElement(
-				new Texture("assets/catalyst-energy/textures/gui/blank.png", 176, 166))
-				.config((c) -> c
-					.setCentered(true)
-					.setChildrenPlacement(Placement.CHILD_DECIDE)
-				)
-				.addChildren(
-					playerInventory,
-					el
-				)
-				.setSid("BACKGROUND")
-				.setPosition(Placement.CENTER);*/
-
 			addContent(playerInventory);
 			addContent(grid);
 		}
 
 		@Override
 		public void update() {
-			playerInventory.update();
 			super.update();
 		}
 	}

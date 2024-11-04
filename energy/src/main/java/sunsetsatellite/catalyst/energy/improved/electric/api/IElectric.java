@@ -20,7 +20,7 @@ public interface IElectric {
 	 */
 	long getEnergy();
 	/**
-	 * @return Maximum energy capacity of the container.
+	 * @return Maximum energy capacity of the container
 	 */
 	long getCapacity();
 
@@ -95,4 +95,8 @@ public interface IElectric {
 	 */
 	long receiveEnergy(@NotNull Direction dir, long amperage);
 
+	/**
+	 * Triggered when the container is exposed to more voltage than it can handle.
+	 */
+	void onOvervoltage(long voltage);
 }

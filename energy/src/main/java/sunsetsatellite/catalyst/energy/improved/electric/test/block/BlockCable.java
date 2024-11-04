@@ -18,10 +18,9 @@ import sunsetsatellite.catalyst.energy.improved.electric.api.VoltageTier;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireMaterial;
 import sunsetsatellite.catalyst.energy.improved.electric.api.WireProperties;
 import sunsetsatellite.catalyst.energy.improved.electric.test.tile.TileEntityCable;
-import sunsetsatellite.catalyst.energy.improved.electric.api.IElectricWire;
 
 
-public class BlockCable extends BlockTileEntity implements IElectricWire, ICustomDescription, NetworkComponent, IConduitBlock, ISideInteractable {
+public class BlockCable extends BlockTileEntity implements ICustomDescription, NetworkComponent, IConduitBlock, ISideInteractable {
 
 	public final WireProperties properties;
 
@@ -30,7 +29,6 @@ public class BlockCable extends BlockTileEntity implements IElectricWire, ICusto
 		this.properties = properties;
 	}
 
-	@Override
 	public WireProperties getProperties() {
 		return properties;
 	}

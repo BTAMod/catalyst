@@ -20,4 +20,9 @@ public class TileEntitySimpleElectricGenerator extends TileEntityElectricGenerat
 		internalAddEnergy(maxVoltageOut * maxAmpsOut);
 		super.tick();
 	}
+
+	@Override
+	public void onOvervoltage(long voltage) {
+
+	}
 }

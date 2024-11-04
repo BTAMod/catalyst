@@ -32,7 +32,7 @@ public class BlockElectricBatteryBox extends BlockElectric {
 			TextFormatting.LIGHT_GRAY, TextFormatting.WHITE, 4,
 			TextFormatting.LIGHT_GRAY, TextFormatting.ORANGE, TextFormatting.LIGHT_GRAY,
 			TextFormatting.LIME, tier.maxVoltage, TextFormatting.LIGHT_GRAY, tier.textColor, tier.name(), TextFormatting.LIGHT_GRAY,
-			TextFormatting.LIGHT_GRAY, TextFormatting.RED, TextFormatting.LIGHT_GRAY, TextFormatting.ORANGE, 1,
+			TextFormatting.LIGHT_GRAY, TextFormatting.RED, TextFormatting.LIGHT_GRAY, TextFormatting.ORANGE, 8,
 			TextFormatting.LIGHT_GRAY, TextFormatting.LIME, TextFormatting.LIGHT_GRAY, TextFormatting.ORANGE, 4,
 			TextFormatting.LIGHT_GRAY, TextFormatting.YELLOW, NumberUtil.formatMetric(128000*4)
 		);
