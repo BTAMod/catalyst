@@ -14,6 +14,9 @@ import sunsetsatellite.catalyst.core.util.Vec3i;
 
 import java.util.*;
 
+/**
+ * A network of blocks.
+ */
 public class Network {
 
 	protected final Map<Vec3i, NetworkComponent> networkBlocks = Maps.newHashMap();
@@ -37,6 +40,11 @@ public class Network {
 		color = new Color().setRGBA(random.nextInt(255),random.nextInt(255),random.nextInt(255),255);
 	}
 
+	/**
+	 * Returns a list of paths possible in this network from the current position.
+	 * @param pos The position to start from
+	 * @return List of possible <code>NetworkPath</code>s sorted according to their distance from <code>pos</code>
+	 */
 	public List<NetworkPath> getPathData(Vec3i pos){
 		List<NetworkPath> routes = NET_PATH_DATA.get(pos);
 		if(routes == null){

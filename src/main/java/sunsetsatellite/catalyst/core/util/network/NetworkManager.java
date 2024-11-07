@@ -11,6 +11,10 @@ import sunsetsatellite.catalyst.core.util.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Global singleton that manages saving/loading network data, removing/adding blocks from/to networks, merging similar networks together,
+ * and splitting disconnected parts of a network.
+ */
 public class NetworkManager implements Signal.Listener<BlockChangeInfo> {
 
 	private static final Map<Integer, Set<Network>> NETS = new HashMap<>();
@@ -135,7 +139,7 @@ public class NetworkManager implements Signal.Listener<BlockChangeInfo> {
 			int py = y + offset.y;
 			int pz = z + offset.z;
 			if (canBeNet(world, px, py, pz) && getNet(world, px, py, pz) == null && net != null) {
-				NetworkComponent sideComponent = (NetworkComponent) world.getBlock(x,y,z);
+				NetworkComponent sideComponent = (NetworkComponent) world.getBlock(px,py,pz);
 				if(net.isOfSameType(sideComponent)){
 					net.addBlock(px, py, pz);
 				}

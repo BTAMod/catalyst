@@ -2,6 +2,9 @@ package sunsetsatellite.catalyst.core.util.network;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Class representing network types, Blocks in networks with differing types won't connect to each other and their networks won't merge.
+ */
 public class NetworkType {
 
 	public static final NetworkType FLUID = new NetworkType("fluid");

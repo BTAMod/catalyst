@@ -2,6 +2,9 @@ package sunsetsatellite.catalyst.core.util.network;
 
 import sunsetsatellite.catalyst.core.util.Direction;
 
+/**
+ * A path from one component to another in a network.
+ */
 public class NetworkPath {
 
 	public final NetworkComponentTile target;

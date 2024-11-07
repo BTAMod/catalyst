@@ -10,6 +10,12 @@ import sunsetsatellite.catalyst.core.util.Vec3i;
 
 import java.util.*;
 
+/**
+ * Travels across a network recording possible paths between its components.
+ * <p>
+ * This class uses <code>IConduitTile</code> to differentiate between the medium (wires) and endpoints (devices) of a network to build paths.
+ * @param <T> Any type that extends <code>NetworkComponentTile</code>
+ */
 public class NetworkWalker<T extends NetworkComponentTile> {
 
 	protected NetworkWalker<T> root;
@@ -52,10 +58,17 @@ public class NetworkWalker<T extends NetworkComponentTile> {
 		return subWalker;
 	}
 
+	/**
+	 * By default, will travel at most 32768 blocks.
+	 */
 	public void traverse(){
 		traverse(32768);
 	}
 
+	/**
+	 * Traverse the network until <code>max</code> is reached or there aren't any more valid paths.
+	 * @param max The maximum amount of blocks to traverse
+	 */
 	public void traverse(int max){
 		if(used){
 			throw new IllegalStateException("Walker already used!");
