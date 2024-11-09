@@ -177,10 +177,10 @@ public class Structure {
     }
 
     public ArrayList<BlockInstance> getTileEntities(World world, Vec3i origin, Direction dir){
-        ArrayList<BlockInstance> tiles = new ArrayList<>();
-        for (Tag<?> tag : data.getCompound("Blocks").getValues()) {
-            CompoundTag blockTag = (CompoundTag) tag;
-            Vec3i pos = new Vec3i(blockTag.getCompound("pos")).rotate(origin,dir);
+		ArrayList<BlockInstance> tiles = new ArrayList<>();
+		for (Tag<?> tag : data.getCompound("TileEntities").getValues()) {
+			CompoundTag blockTag = (CompoundTag) tag;
+			Vec3i pos = new Vec3i(blockTag.getCompound("pos")).rotate(origin,dir);
 			int meta = blockTag.getInteger("meta");
 			if (meta != -1 && meta != 0 && meta != 1) {
 				if (dir.shiftAxis() == Direction.Z_NEG) {
@@ -191,12 +191,12 @@ public class Structure {
 					meta = dir.shiftAxis() == Direction.X_NEG ? blockDir.getSideNumber() : blockDir.getOpposite().getSideNumber();
 				}
 			}
-            int id = getBlockId(blockTag);
-            Block block = Block.getBlock(id);
-            BlockInstance blockInstance = new BlockInstance(block,pos,meta,world.getBlockTileEntity(pos.x, pos.y, pos.z));
-            tiles.add(blockInstance);
-        }
-        return tiles;
+			int id = getBlockId(blockTag);
+			Block block = Block.getBlock(id);
+			BlockInstance blockInstance = new BlockInstance(block,pos,meta,world.getBlockTileEntity(pos.x, pos.y, pos.z));
+			tiles.add(blockInstance);
+		}
+		return tiles;
     }
 
     public ArrayList<BlockInstance> getBlocks(){
