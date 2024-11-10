@@ -2,12 +2,18 @@ package sunsetsatellite.catalyst.core.util.network;
 
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
+import com.mojang.nbt.NbtIo;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.WorldSource;
 import sunsetsatellite.catalyst.Catalyst;
-import sunsetsatellite.catalyst.core.util.*;
+import sunsetsatellite.catalyst.core.util.BlockChangeInfo;
+import sunsetsatellite.catalyst.core.util.Direction;
+import sunsetsatellite.catalyst.core.util.Signal;
+import sunsetsatellite.catalyst.core.util.Vec3i;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,11 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Global singleton that manages saving/loading network data, removing/adding blocks from/to networks, merging similar networks together,
  * and splitting disconnected parts of a network.
  */
-public class NetworkManager implements Signal.Listener<BlockChangeInfo> {
+public class NetworkManager {
 
 	private static final Map<Integer, Set<Network>> NETS = new HashMap<>();
 	private static final AtomicInteger ID_PROVIDER = new AtomicInteger(0);
-	private static final NetworkManager INSTANCE = new NetworkManager();
 
 	private NetworkManager() {}
 
@@ -28,21 +33,53 @@ public class NetworkManager implements Signal.Listener<BlockChangeInfo> {
 		return net == null ? -1 : net.hashCode();
 	}
 
-	public static Signal.Listener<BlockChangeInfo> getInstance() {
-		return INSTANCE;
-	}
 
-	@Override
-	public void signalEmitted(Signal<BlockChangeInfo> signal, BlockChangeInfo blockChanged) {
-		if(signal != Catalyst.TILE_ENTITY_BLOCK_CHANGED_SIGNAL) return;
+	public static class BlockChangeListener implements Signal.Listener<BlockChangeInfo> {
+		public static final Signal.Listener<BlockChangeInfo> INSTANCE = new BlockChangeListener();
 
-		if(blockChanged.id == 0){
-			removeBlock(blockChanged);
-		} else {
-			addBlock(blockChanged);
+		@Override
+		public void signalEmitted(Signal<BlockChangeInfo> signal, BlockChangeInfo blockChanged) {
+			if (signal != Catalyst.TILE_ENTITY_BLOCK_CHANGED_SIGNAL) {
+				return;
+			}
+			if(blockChanged.id == 0){
+				removeBlock(blockChanged);
+			} else {
+				addBlock(blockChanged);
+			}
 		}
-
 	}
+
+	public static class LoadSaveListener implements Signal.Listener<World> {
+		public static final Signal.Listener<World> INSTANCE = new LoadSaveListener();
+
+		@Override
+		public void signalEmitted(Signal<World> signal, World world) {
+			if(signal == Catalyst.DIMENSION_LOAD_SIGNAL){
+				File file = world.saveHandler.getDataFile("networks_"+world.dimension.id);
+				if (file.exists()) {
+					try {
+						CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(file.toPath()));
+						NetworkManager.netsFromTag(world, tag);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} else if (signal == Catalyst.DIMENSION_SAVE_SIGNAL) {
+				try {
+					File file = world.saveHandler.getDataFile("networks_"+world.dimension.id);
+					CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(file.toPath()));
+					NetworkManager.netsToTag(world, tag);
+					NbtIo.writeCompressed(tag, Files.newOutputStream(file.toPath()));
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 
 	public static void addBlock(BlockChangeInfo blockChanged) {
 		int x = blockChanged.pos.x;

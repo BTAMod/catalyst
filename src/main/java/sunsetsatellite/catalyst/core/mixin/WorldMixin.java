@@ -1,6 +1,7 @@
 package sunsetsatellite.catalyst.core.mixin;
 
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.save.LevelData;
 import net.minecraft.core.world.save.LevelStorage;
@@ -16,7 +17,6 @@ import sunsetsatellite.catalyst.Catalyst;
 import sunsetsatellite.catalyst.core.util.BlockChangeInfo;
 import sunsetsatellite.catalyst.core.util.Vec3i;
 import sunsetsatellite.catalyst.core.util.mixin.interfaces.IAbsoluteWorldTime;
-import sunsetsatellite.catalyst.core.util.mixin.interfaces.ISaveHandlerWorld;
 import sunsetsatellite.catalyst.core.util.network.NetworkManager;
 
 @Mixin(value = World.class,remap = false)
@@ -34,37 +34,20 @@ public abstract class WorldMixin implements IAbsoluteWorldTime {
 
 	@Shadow
 	protected LevelData levelData;
+	@Shadow
+	@Final
+	public Dimension dimension;
 	@Unique
 	private final World thisAs = (World)((Object)this);
 
-	@Inject(method = "<init>(Lnet/minecraft/core/world/World;Lnet/minecraft/core/world/Dimension;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/world/save/LevelStorage;getDimensionData(I)Lnet/minecraft/core/world/save/DimensionData;", shift = At.Shift.BEFORE))
-	public void init1(CallbackInfo ci){
-		((ISaveHandlerWorld) saveHandler).setWorld(thisAs);
-	}
-
-	@Inject(method = "<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;Lnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;J)V", at = @At(value = "TAIL"))
-	public void init2(CallbackInfo ci){
-		((ISaveHandlerWorld) saveHandler).setWorld(thisAs);
-	}
-
-	@Inject(method = "<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;JLnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/world/save/LevelStorage;getDimensionData(I)Lnet/minecraft/core/world/save/DimensionData;", shift = At.Shift.BEFORE))
-	public void init3(CallbackInfo ci){
-		((ISaveHandlerWorld) saveHandler).setWorld(thisAs);
-	}
-
-	@Inject(method = "<init>(Lnet/minecraft/core/world/World;Lnet/minecraft/core/world/Dimension;)V", at = @At("TAIL"))
+	@Inject(method = {
+		"<init>(Lnet/minecraft/core/world/World;Lnet/minecraft/core/world/Dimension;)V",
+		"<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;Lnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;J)V",
+		"<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;JLnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;)V"
+	}, at = @At("TAIL"))
 	public void init4(CallbackInfo ci){
 		NetworkManager.updateAllNets();
-	}
-
-	@Inject(method = "<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;Lnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;J)V", at = @At(value = "TAIL"))
-	public void init5(CallbackInfo ci){
-		NetworkManager.updateAllNets();
-	}
-
-	@Inject(method = "<init>(Lnet/minecraft/core/world/save/LevelStorage;Ljava/lang/String;JLnet/minecraft/core/world/Dimension;Lnet/minecraft/core/world/type/WorldType;)V", at = @At("TAIL"))
-	public void init6(CallbackInfo ci){
-		NetworkManager.updateAllNets();
+		Catalyst.DIMENSION_SAVE_SIGNAL.emit(thisAs);
 	}
 
 	@Inject(method = "setBlock", at = @At("RETURN"))
@@ -104,5 +87,10 @@ public abstract class WorldMixin implements IAbsoluteWorldTime {
 	@Override
 	public void setAbsoluteWorldTime(long value) {
 		((IAbsoluteWorldTime) levelData).setAbsoluteWorldTime(value);
+	}
+
+	@Inject(method = "saveWorldData", at = @At(value = "HEAD"))
+	public void worldSaveSignal(CallbackInfo ci){
+		Catalyst.DIMENSION_LOAD_SIGNAL.emit(thisAs);
 	}
 }

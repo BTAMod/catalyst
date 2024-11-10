@@ -31,6 +31,8 @@ public class Catalyst implements ModInitializer {
 
 	public static final Signal<BlockChangeInfo> TILE_ENTITY_BLOCK_CHANGED_SIGNAL = new Signal<>();
 	public static final Signal<BlockChangeInfo> ANY_BLOCK_CHANGED_SIGNAL = new Signal<>();
+	public static final Signal<World> DIMENSION_LOAD_SIGNAL = new Signal<>();
+	public static final Signal<World> DIMENSION_SAVE_SIGNAL = new Signal<>();
 
 	static {
 		NetworkHelper.register(PacketOpenGui.class,false,true);
@@ -38,7 +40,9 @@ public class Catalyst implements ModInitializer {
 
     @Override
     public void onInitialize() {
-		TILE_ENTITY_BLOCK_CHANGED_SIGNAL.connect(NetworkManager.getInstance());
+		TILE_ENTITY_BLOCK_CHANGED_SIGNAL.connect(NetworkManager.BlockChangeListener.INSTANCE);
+		DIMENSION_LOAD_SIGNAL.connect(NetworkManager.LoadSaveListener.INSTANCE);
+		DIMENSION_SAVE_SIGNAL.connect(NetworkManager.LoadSaveListener.INSTANCE);
         LOGGER.info("Catalyst initialized.");
     }
 

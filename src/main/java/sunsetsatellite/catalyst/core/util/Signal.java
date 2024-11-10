@@ -35,7 +35,7 @@ public class Signal<T> {
 
     public void emit(T t) {
 		emitting = true;
-		for (Listener<T> listener : listeners) {
+		for (Listener<T> listener : new ArrayList<>(listeners)) {
 			listener.signalEmitted(this, t);
 		}
 		for (Listener<T> listener : removeQueue) {
