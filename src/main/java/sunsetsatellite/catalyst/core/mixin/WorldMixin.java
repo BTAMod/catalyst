@@ -1,5 +1,7 @@
 package sunsetsatellite.catalyst.core.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
@@ -17,6 +19,7 @@ import sunsetsatellite.catalyst.Catalyst;
 import sunsetsatellite.catalyst.core.util.BlockChangeInfo;
 import sunsetsatellite.catalyst.core.util.Vec3i;
 import sunsetsatellite.catalyst.core.util.mixin.interfaces.IAbsoluteWorldTime;
+import sunsetsatellite.catalyst.core.util.mixin.interfaces.ITileEntityInit;
 import sunsetsatellite.catalyst.core.util.network.NetworkManager;
 
 @Mixin(value = World.class,remap = false)
@@ -47,7 +50,7 @@ public abstract class WorldMixin implements IAbsoluteWorldTime {
 	}, at = @At("TAIL"))
 	public void init4(CallbackInfo ci){
 		NetworkManager.updateAllNets();
-		Catalyst.DIMENSION_SAVE_SIGNAL.emit(thisAs);
+		Catalyst.DIMENSION_LOAD_SIGNAL.emit(thisAs);
 	}
 
 	@Inject(method = "setBlock", at = @At("RETURN"))
@@ -91,6 +94,23 @@ public abstract class WorldMixin implements IAbsoluteWorldTime {
 
 	@Inject(method = "saveWorldData", at = @At(value = "HEAD"))
 	public void worldSaveSignal(CallbackInfo ci){
-		Catalyst.DIMENSION_LOAD_SIGNAL.emit(thisAs);
+		Catalyst.DIMENSION_SAVE_SIGNAL.emit(thisAs);
+	}
+
+
+	@Inject(method = "setBlockTileEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/world/chunk/Chunk;setTileEntity(IIILnet/minecraft/core/block/entity/TileEntity;)V", shift = At.Shift.AFTER))
+	public void initTE(int x, int y, int z, TileEntity tileEntity, CallbackInfo ci){
+		if(!((ITileEntityInit) tileEntity).isInitialized()){
+			((ITileEntityInit) tileEntity).setInitialized();
+			((ITileEntityInit) tileEntity).init(Block.getBlock(getBlockId(x,y,z)));
+		}
+	}
+
+	@Inject(method = "updateEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/entity/TileEntity;tick()V", shift = At.Shift.BEFORE))
+	public void initTE2(CallbackInfo ci, @Local TileEntity tileentity1){
+		if(!((ITileEntityInit) tileentity1).isInitialized()){
+			((ITileEntityInit) tileentity1).setInitialized();
+			((ITileEntityInit) tileentity1).init(Block.getBlock(getBlockId(tileentity1.x, tileentity1.y, tileentity1.z)));
+		}
 	}
 }

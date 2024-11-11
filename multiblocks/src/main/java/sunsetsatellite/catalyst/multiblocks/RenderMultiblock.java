@@ -23,6 +23,9 @@ public class RenderMultiblock extends TileEntityRenderer<TileEntity> {
         Direction dir = Direction.getDirectionFromSide(tileEntity.getMovedData());
         World world = this.renderDispatcher.renderEngine.mc.theWorld;
         if(tileEntity instanceof IMultiblock){
+			if(((IMultiblock) tileEntity).getMultiblock() == null){
+				return;
+			}
             Multiblock multiblock = ((IMultiblock) tileEntity).getMultiblock().data;
             ArrayList<BlockInstance> blocks = multiblock.getBlocks(new Vec3i(i, j, k),dir);
             ArrayList<BlockInstance> substitutions = multiblock.getSubstitutions(new Vec3i(i, j, k),dir);

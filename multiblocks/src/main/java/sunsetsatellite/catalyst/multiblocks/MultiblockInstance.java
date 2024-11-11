@@ -15,7 +15,7 @@ public class MultiblockInstance implements Signal.Listener<BlockChangeInfo>{
 		this.origin = origin;
 		this.data = data;
 		Catalyst.ANY_BLOCK_CHANGED_SIGNAL.connect(this);
-		verifyIntegrity();
+		valid = verifyIntegrity();
 	}
 
 	@Override
