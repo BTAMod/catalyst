@@ -10,6 +10,7 @@ public class Signal<T> {
     private final List<Listener<T>> listeners = new ArrayList<>();
 	private final List<Listener<T>> removeQueue = new ArrayList<>();
 	private boolean emitting = false;
+	public boolean silenced = false;
 
     public interface Listener<T> {
         void signalEmitted(Signal<T> signal, T t);
@@ -34,14 +35,16 @@ public class Signal<T> {
     }
 
     public void emit(T t) {
-		emitting = true;
-		for (Listener<T> listener : new ArrayList<>(listeners)) {
-			listener.signalEmitted(this, t);
+		if(!silenced){
+			emitting = true;
+			for (Listener<T> listener : new ArrayList<>(listeners)) {
+				listener.signalEmitted(this, t);
+			}
+			for (Listener<T> listener : removeQueue) {
+				listeners.remove(listener);
+			}
+			removeQueue.clear();
+			emitting = false;
 		}
-		for (Listener<T> listener : removeQueue) {
-			listeners.remove(listener);
-		}
-		removeQueue.clear();
-		emitting = false;
     }
 }

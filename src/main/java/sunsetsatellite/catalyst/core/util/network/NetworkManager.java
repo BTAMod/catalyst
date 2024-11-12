@@ -14,6 +14,7 @@ import sunsetsatellite.catalyst.core.util.Vec3i;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -69,7 +70,12 @@ public class NetworkManager {
 			} else if (signal == Catalyst.DIMENSION_SAVE_SIGNAL) {
 				try {
 					File file = world.saveHandler.getDataFile("networks_"+world.dimension.id);
-					CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(file.toPath()));
+					CompoundTag tag = new CompoundTag();
+					try {
+						tag = NbtIo.readCompressed(Files.newInputStream(file.toPath()));
+					} catch (NoSuchFileException e){
+						Catalyst.LOGGER.info("Creating new networks file for dimension {}!",world.dimension.id);
+					}
 					NetworkManager.netsToTag(world, tag);
 					NbtIo.writeCompressed(tag, Files.newOutputStream(file.toPath()));
 				}
