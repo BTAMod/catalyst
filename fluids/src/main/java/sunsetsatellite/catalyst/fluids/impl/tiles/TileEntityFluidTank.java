@@ -8,7 +8,6 @@ import sunsetsatellite.catalyst.core.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class TileEntityFluidTank extends TileEntityFluidItemContainer {
     public TileEntityFluidTank(){
@@ -21,26 +20,12 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer {
 
     @Override
     public void tick() {
-        extractFluids();
         super.tick();
     }
 
     @Override
     public String getInvName() {
         return "Fluid Tank";
-    }
-
-    public void extractFluids(){
-        for (Map.Entry<Direction, Connection> e : fluidConnections.entrySet()) {
-            Direction dir = e.getKey();
-            Connection connection = e.getValue();
-            TileEntity tile = dir.getTileEntity(worldObj,this);
-            if (tile instanceof TileEntityFluidPipe) {
-                pressurizePipes((TileEntityFluidPipe) tile, new ArrayList<>());
-                moveFluids(dir, (TileEntityFluidPipe) tile);
-                ((TileEntityFluidPipe) tile).rememberTicks = 100;
-            }
-        }
     }
 
     public void pressurizePipes(TileEntityFluidPipe pipe, ArrayList<HashMap<String,Integer>> already){

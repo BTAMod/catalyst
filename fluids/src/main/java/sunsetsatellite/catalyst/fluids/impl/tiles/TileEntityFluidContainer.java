@@ -229,15 +229,8 @@ public class TileEntityFluidContainer extends TileEntity
 
     @Override
     public void tick() {
+		extractFluids();
         super.tick();
-		/*fluidContents = Arrays.stream(fluidContents).map((F)-> (F != null && F.amount <= 0) ? null : F).toArray(FluidStack[]::new);
-        if(!worldObj.isClientSide){
-            for (EntityPlayer player : worldObj.players) {
-                if(player instanceof EntityPlayerMP){
-					//((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new PacketUpdateClientFluidRender(x,y,z,fluidContents[0],fluidCapacity[0]));
-                }
-            }
-        }*/
     }
 
     public void writeToNBT(CompoundTag CompoundTag1) {
@@ -349,6 +342,17 @@ public class TileEntityFluidContainer extends TileEntity
             }
         }
     }
+
+	public void extractFluids(){
+		for (Map.Entry<Direction, Connection> e : fluidConnections.entrySet()) {
+			Direction dir = e.getKey();
+			TileEntity tile = dir.getTileEntity(worldObj,this);
+			if (tile instanceof TileEntityFluidPipe) {
+				moveFluids(dir, (TileEntityFluidPipe) tile);
+				((TileEntityFluidPipe) tile).rememberTicks = 100;
+			}
+		}
+	}
 
 	@Override
 	public int getActiveFluidSlotForSide(Direction dir) {
