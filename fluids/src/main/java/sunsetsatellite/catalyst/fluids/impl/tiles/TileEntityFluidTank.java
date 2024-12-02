@@ -1,13 +1,9 @@
 package sunsetsatellite.catalyst.fluids.impl.tiles;
 
 
-import net.minecraft.core.block.entity.TileEntity;
 import sunsetsatellite.catalyst.CatalystFluids;
 import sunsetsatellite.catalyst.core.util.Connection;
 import sunsetsatellite.catalyst.core.util.Direction;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TileEntityFluidTank extends TileEntityFluidItemContainer {
     public TileEntityFluidTank(){
@@ -26,43 +22,5 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer {
     @Override
     public String getInvName() {
         return "Fluid Tank";
-    }
-
-    public void pressurizePipes(TileEntityFluidPipe pipe, ArrayList<HashMap<String,Integer>> already){
-        for (Direction dir : Direction.values()) {
-            TileEntity tile = dir.getTileEntity(worldObj,this);
-            if (tile instanceof TileEntityFluidPipe) {
-                for (HashMap<String, Integer> V2 : already) {
-                    if (V2.get("x") == tile.x && V2.get("y") == tile.y && V2.get("z") == tile.z) {
-                        return;
-                    }
-                }
-                HashMap<String,Integer> list = new HashMap<>();
-                list.put("x",tile.x);
-                list.put("y",tile.y);
-                list.put("z",tile.z);
-                already.add(list);
-                pressurizePipes((TileEntityFluidPipe) tile,already);
-            }
-        }
-    }
-
-    public void unpressurizePipes(TileEntityFluidPipe pipe,ArrayList<HashMap<String,Integer>> already){
-        for (Direction dir : Direction.values()) {
-            TileEntity tile = dir.getTileEntity(worldObj,this);
-            if (tile instanceof TileEntityFluidPipe) {
-                for (HashMap<String, Integer> V2 : already) {
-                    if (V2.get("x") == tile.x && V2.get("y") == tile.y && V2.get("z") == tile.z) {
-                        return;
-                    }
-                }
-                HashMap<String,Integer> list = new HashMap<>();
-                list.put("x",tile.x);
-                list.put("y",tile.y);
-                list.put("z",tile.z);
-                already.add(list);
-                unpressurizePipes((TileEntityFluidPipe) tile,already);
-            }
-        }
     }
 }
