@@ -3,6 +3,7 @@ package sunsetsatellite.catalyst.multipart.block.model;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.stitcher.IconCoordinate;
+import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
@@ -57,7 +58,8 @@ public class BlockModelMultipart extends BlockModelStandard<Block> {
 
 	@Override
 	public IconCoordinate getParticleTexture(Side side, int meta) {
-		return super.getParticleTexture(side, meta);
+		IconCoordinate particleTexture = super.getParticleTexture(side, meta);
+		return particleTexture == null ? TextureRegistry.getTexture("minecraft:block/stone") : particleTexture;
 	}
 
 	public MultipartInternalModel[] getModelsFromState(Block block, int x, int y, int z, boolean sourceFromWorld){
