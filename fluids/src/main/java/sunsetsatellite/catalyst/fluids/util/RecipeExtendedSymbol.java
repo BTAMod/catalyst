@@ -26,6 +26,15 @@ public class RecipeExtendedSymbol {
         this.fluidStack = fluidStack;
     }
 
+	public RecipeExtendedSymbol(RecipeSymbol symbol){
+		if(symbol == null){
+			throw new NullPointerException("Null symbol!");
+		}
+		this.symbol = symbol.getSymbol();
+		this.stack = symbol.getStack();
+		this.itemGroup = symbol.getItemGroup();
+	}
+
     public RecipeExtendedSymbol(char symbol, ItemStack stack, String itemGroup) {
         if(stack == null && (itemGroup == null || Objects.equals(itemGroup, ""))){
             throw new NullPointerException("Null symbol!");
